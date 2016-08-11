@@ -16,6 +16,8 @@
 #ifndef HEADLESS_LOGIC_GENETIC_ALGORITHM
 #define HEADLESS_LOGIC_GENERIC_ALGORITHM
 
+#include <random>
+
 namespace Headless {
     namespace Logic {
         /**
@@ -92,8 +94,15 @@ namespace Headless {
                             }
                         }
 
+                        unsigned int number = eliteCount < size ? eliteCount : size;
+                        for(unsigned int i = 0; i < number; ++i) {
+                            store[i] = env->clone(_pool[i]);
+                        }
+
                         // Clean-up the pool.
                         env->release(_pool, _count);
+
+                        return number;
                     }
 
                 private:
@@ -102,7 +111,10 @@ namespace Headless {
                      */
                     template <typename M, typename... O> void mutate(unsigned int pos, unsigned int count,
                             M mutator, O... others) {
-                        double rnd = 0; // TODO Random Score.
+                        std::random_device rd;
+                        std::mt19937 mt(rd());
+                        std::uniform_real_distribution dist(0.0, 1.0);
+                        double rnd = dist(mt);
                         if(rnd < mutator->threshold()) {
                             mutator->mutate(_pool, count, _pool + pos);
                         } else {
