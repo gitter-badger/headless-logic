@@ -64,7 +64,7 @@ namespace Headless {
                      * Training.
                      * @param <E> Creation and evaluation environment type. It must define
                      *      the following methods:
-                     *      - void reserve(C**, unsigned int)
+                     *      - void reserve(C**&, unsigned int)
                      *      - void release(C**, unsigned int)
                      *      - double evaluate (const C*)
                      *      - C* clone(const C*)
@@ -124,14 +124,14 @@ namespace Headless {
                         std::uniform_real_distribution<double> dist(0.0, 1.0);
                         double rnd = dist(mt);
                         if(rnd < mutator->threshold()) {
-                            mutator->mutate(_pool, count, _pool + pos);
+                            mutator->mutate(_pool, count, _pool[pos]);
                         } else {
                             mutate(pos, count, others...);
                         }
                     }
 
                     template <typename M> void mutate(unsigned int pos, unsigned int count, M mutator) {
-                        mutator->mutate(_pool, count, _pool + pos);
+                        mutator->mutate(_pool, count, _pool[pos]);
                     }
 
                     /**
@@ -145,7 +145,7 @@ namespace Headless {
                         // Evaluate ...
                         #pragma omp parallel for
                         for(unsigned int i = 0; i < _count; ++i) {
-                            _score + i = env->evaluate(_pool + i);
+                            _score[i] = env->evaluate(_pool[i]);
                         }
 
                         // ... and sort.
@@ -177,26 +177,26 @@ namespace Headless {
                     }
 
                     unsigned int partition(unsigned int lo, unsigned int hi) {
-                        double pivot = _score + lo;
+                        double pivot = _score[lo];
                         unsigned int i = lo - 1;
                         unsigned int j = hi + 1;
 
                         for(;;) {
                             do {
                                 ++i;
-                            } while(_score + i < pivot);
+                            } while(_score[i] < pivot);
                             do {
                                 --j;
-                            } while(_score + j > pivot);
+                            } while(_score[j] > pivot);
                             if(i >= j) {
                                 return j;
                             }
-                            double score = _score + i;
-                            C* candidate = _pool + i;
-                            _score + i = _score + j;
-                            _pool + i = _pool + j;
-                            _score + j = score;
-                            _pool + j = candidate;
+                            double score = _score[i];
+                            C* candidate = _pool[i];
+                            _score[i] = _score[j];
+                            _pool[i] = _pool[j];
+                            _score[j] = score;
+                            _pool[j] = candidate;
                         }
                         return 0; // Should never happen.
                     }
