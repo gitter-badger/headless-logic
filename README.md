@@ -1,5 +1,7 @@
 # Headless Logic Library
 
+[![Join the chat at https://gitter.im/stoned-logic/Lobby](https://badges.gitter.im/stoned-logic/Lobby.svg)](https://gitter.im/stoned-logic/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Purpose
 
 Besides the authors' fun, the purpose of this library/repository is to propose lightweight, dependence-free implementation of some computational concept. All of them should(will) eventually(certainly) come with appropriate in-code documentation as well as some fancy markdowny/wiki-hosted extended documentation with examples.
