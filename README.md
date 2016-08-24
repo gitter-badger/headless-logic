@@ -32,3 +32,6 @@ Feel free to participate and propose stuff via pull request or issuing. All the 
 - Provide examples.
 
 As for examples, using other libraries is encouraged as it could illustrate greatly the underlying concept.
+
+As a final notice, please provide basic testing result for examples using the following:
+- valgrind
